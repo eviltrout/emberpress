@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>EmberPress</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+    <link href='http://fonts.googleapis.com/css?family=Average+Sans' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/font-awesome.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script src="js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
+  </head>
+  <body>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="js/vendor/handlebars-1.0.rc.1.js"></script>
+    <script src="js/vendor/ember-1.0.0-pre.2.min.js"></script>    
+
+    <script type="text/x-handlebars" data-template-name="application">
+      <h1>EmberPress</h1>
+
+      <div class="content">
+        {{outlet}}
+      </div>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="player">
+      <i class='icon icon-user'></i>
+      <i class='icon icon-caret-down'></i>
+      <figure class='score'>{{view.content.currentScore}}</figure>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="board">
+
+      <nav id='controls'>
+        {{#if showClearWord}}
+          <a href='#' {{action clearWord target="controller"}} class='clear'>CLEAR</a>
+        {{/if}}
+        {{#if showSubmitWord}}
+          <a href='#' {{action submitWord target="controller"}} class='submit'>SUBMIT</a>
+        {{/if}}
+      </nav>
+
+      <summary id='score'>
+        {{view EmberPress.PlayerView contentBinding="content.player1"}}
+        {{view EmberPress.PlayerView contentBinding="content.player2"}}
+      </summary>
+
+      <section id='word'>
+        {{#each content.word}}
+          {{view EmberPress.WordLetterView contentBinding="this"}}
+        {{/each}}
+      </section>
+
+      <section id='board'>
+        {{#each content.rows}}
+          <div class='row'>{{#each this}}{{view EmberPress.BoardLetterView contentBinding="this"}}{{/each}}</div>
+        {{/each}}
+      </section>
+
+      {{#if content.hasPlayed}}
+        <section id='history'>
+          Played words:
+          <ul>
+            {{#each content.played}}
+              <li {{bindAttr class="playedBy.id"}}>{{value}}</li>
+            {{/each}}
+          </ul>
+        </section>
+      {{/if}}
+    </script>
+
+
+    <script src="js/app/game.js"></script>
+  </body>
+</html>
