@@ -2,29 +2,90 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>EmberPress</title>
-    <meta name="description" content="">
+    <title>EmberPress - A Letterpress clone in EmberJS</title>
+    <meta name="description" content="EmberPress is a clone of Letterpress written in the EmberJS framework.">
     <meta name="viewport" content="width=device-width">
 
     <link href='http://fonts.googleapis.com/css?family=Average+Sans' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/font-awesome.css">
     <link rel="stylesheet" href="css/main.css">
-
-    <script src="js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
   </head>
   <body>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script src="js/vendor/handlebars-1.0.rc.1.js"></script>
     <script src="js/vendor/ember-1.0.0-pre.2.min.js"></script>    
+    <script src="js/vendor/dictionary.js"></script>    
 
     <script type="text/x-handlebars" data-template-name="application">
-      <h1>EmberPress</h1>
+      <header>
+        <h1>EmberPress</h1>
+
+        <button {{action toggleInstructions target="controller"}}>How do I Play?</button>
+      </header>
 
       <div class="content">
         {{outlet}}
       </div>
+
+      <div id='instructions' {{bindAttr class="controller.instructionsVisible:visible"}}>
+
+        <button {{action toggleInstructions target="controller"}}>Close</button>
+
+        <h2>How to Play</h2>
+
+        <p>Players take turns forming words from the tiles. Click on a letter
+           tile to add it to your word. When your word is complete, hit <b>Submit</b>.
+           You will then convert those letter tiles to your player's color.</p>
+
+        <p>There is no Internet multiplayer component - both players must take turns on the 
+           same computer.</p>
+
+        <p>Scores are calculated based on how many colored tiles you are assuming.
+           If you convert the opposing player's tile to your color, it will be
+           subtracted from their score.</p>
+
+        <p>The game ends either when every tile on the board has a color, or
+           when both players pass their turn in a row.</p>
+
+        <h2>Fortifying Tiles</h2>
+
+        <p>If you color a tile and all of its surrounding tiles (NESW, like a compass)
+           it will be fortified and become darker. The opposing player may not steal 
+           that tile and take a point from you. However, if they steal back a surrounding
+           tile, it will become unfortified and return to play.</p>
+
+        <h2>Rules</h2>
+
+        <ul>
+        <li>Words must be at least two letters long.</li>
+        <li>Words may not be played more than once.</li>
+        <li>You can't play a word that was the beginning of a previously played word. For
+            example if the word "ABSOLUTE" was played, you may not play "ABS." You can
+            add on additional letters though: "ABSOLUTELY" would be fine.</li>
+        </ul>
+
+        <h2>Who made this?</h2>
+
+        <p>This is a clone of the popular <a href="https://itunes.apple.com/ca/app/letterpress-word-game/id526619424?mt=8" target="_blank">Letterpress</a>
+           game. It is meant to show off the client side powers of the <a href="http://emberjs.org" target="_blank">EmberJS</a> 
+           framework and was originally created for <a href="http://torontoemberjs.com/" target="_blank">Toronto EmberJS</a> 
+           meetup by <a href="http://eviltrout.com/" target="_blank">Evil Trout</a>.</p>
+
+        <p>Mucho thanks go out Loren Brichter for the inspiration. Thanks to the EmberJS 
+           team for making an awesome framework that makes client side development fun. 
+           The dictionary was imported from <a href="http://dreamsteep.com/projects/the-english-open-word-list.html">EOWL</a>.
+           The player icons are from <a href="http://fortawesome.github.com/Font-Awesome/" target="_blank">Font Awesome</a>.
+
+      </div>
+      <footer>
+        <a href="https://github.com/eviltrout/emberpress" target="_blank">
+          <i class='icon icon-github'></i> View the Source on GitHub
+        </a>
+      </footer>
+
     </script>
+
 
     <script type="text/x-handlebars" data-template-name="player">
       <i class='icon icon-user'></i>
@@ -34,42 +95,65 @@
 
     <script type="text/x-handlebars" data-template-name="board">
 
-      <nav id='controls'>
-        {{#if showClearWord}}
-          <a href='#' {{action clearWord target="controller"}} class='clear'>CLEAR</a>
-        {{/if}}
-        {{#if showSubmitWord}}
-          <a href='#' {{action submitWord target="controller"}} class='submit'>SUBMIT</a>
-        {{/if}}
-      </nav>
+      {{#if inProgress}}
+        <nav id='controls'>
+          {{#if showClearWord}}
+            <button {{action clearWord target="content"}} class='clear'>Clear</button>
+          {{/if}}
+          {{#if showSubmitWord}}
+            <button {{action submitWord target="controller"}} class='submit'>Submit</button>
+          {{/if}}
+        </nav>
 
-      <summary id='score'>
-        {{view EmberPress.PlayerView contentBinding="content.player1"}}
-        {{view EmberPress.PlayerView contentBinding="content.player2"}}
-      </summary>
+        <summary id='score'>
+          {{view EmberPress.PlayerView contentBinding="content.player1"}}
+          {{view EmberPress.PlayerView contentBinding="content.player2"}}
+        </summary>
 
-      <section id='word'>
-        {{#each content.word}}
-          {{view EmberPress.WordLetterView contentBinding="this"}}
-        {{/each}}
-      </section>
+        <section id='word'>
+          {{#each content.word}}
+            {{view EmberPress.WordLetterView contentBinding="this"}}
+          {{/each}}
+        </section>
 
-      <section id='board'>
-        {{#each content.rows}}
-          <div class='row'>{{#each this}}{{view EmberPress.BoardLetterView contentBinding="this"}}{{/each}}</div>
-        {{/each}}
-      </section>
+        <section id='board'>
+          {{#each content.rows}}
+            <div class='row'>{{#each this}}{{view EmberPress.BoardLetterView contentBinding="this"}}{{/each}}</div>
+          {{/each}}
+        </section>
 
-      {{#if content.hasPlayed}}
+        <section id='turn-controls'>
+          <button {{action skipTurn target="controller"}}>Skip Turn</button>
+          <button {{action resign target="controller"}}>Resign</button>
+        </section>
+      {{else}}
+        <h1>Game Over!</h1>
+
+        <div id='winner'>
+          {{#if content.winner}}
+            The winner was <span {{bindAttr class='content.winner.id'}}>{{content.winner.id}}</span> with a score
+            of {{content.winner.score}}.
+          {{else}}
+            It was a tie.
+          {{/if}}
+        </div>
+
+        <div id='new-game'>
+          <button {{action reset target="controller"}}>New Game</button>
+        </div>
+
+      {{/if}}
+
+      {{#if hasPlayed}}
         <section id='history'>
           Played words:
           <ul>
-            {{#each content.played}}
+            {{#each played}}
               <li {{bindAttr class="playedBy.id"}}>{{value}}</li>
             {{/each}}
           </ul>
         </section>
-      {{/if}}
+      {{/if}}      
     </script>
 
 
