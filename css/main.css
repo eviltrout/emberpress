@@ -1,9 +1,9 @@
 body {
   font-family: 'Average Sans', sans-serif;
+  overflow-x: hidden;
 }
 
-/* App title */
-#header {
+header {
   font-size: 30px;
   background-color: #eee;
   box-shadow: 3px 3px 3px #ddd;
@@ -12,7 +12,7 @@ body {
   height: 30px;
 }
 
-#header h1 {
+header h1 {
   float: left;
 }
 
@@ -34,9 +34,33 @@ button:active {
   background-color: #fff;
 }
 
-#header button {
+header button {
   margin: 5px 0 0 0;
   float: right;
+}
+
+footer {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  background-color: #333;
+  padding: 6px 0 6px 10px;
+  line-height: 20px;
+}
+
+footer i {
+  margin-right: 10px;
+  font-size: 20px;
+  float: left;
+}
+
+footer a[href] {
+  color: #999;
+  text-decoration: none;
+}
+
+footer a[href]:hover {
+  color: #bbb;
 }
 
 .content {

@@ -18,11 +18,11 @@
     <script src="js/vendor/dictionary.js"></script>    
 
     <script type="text/x-handlebars" data-template-name="application">
-      <nav id='header'>
+      <header>
         <h1>EmberPress</h1>
 
         <button {{action toggleInstructions target="controller"}}>How do I Play?</button>
-      </nav>
+      </header>
 
       <div class="content">
         {{outlet}}
@@ -77,10 +77,13 @@
            The dictionary was imported from <a href="http://dreamsteep.com/projects/the-english-open-word-list.html">EOWL</a>.
            The player icons are from <a href="http://fortawesome.github.com/Font-Awesome/" target="_blank">Font Awesome</a>.
 
-        <p>The <a href="https://github.com/eviltrout/emberpress" target="_blank">source code</a> is available on Github.</p>    
-
       </div>
-   
+      <footer>
+        <a href="https://github.com/eviltrout/emberpress" target="_blank">
+          <i class='icon icon-github'></i> View the Source on GitHub
+        </a>
+      </footer>
+
     </script>
 
 
@@ -150,7 +153,7 @@
             {{/each}}
           </ul>
         </section>
-      {{/if}}
+      {{/if}}      
     </script>
 
 
