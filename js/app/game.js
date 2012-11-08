@@ -1,6 +1,8 @@
 /*global window*/
 /*global Ember*/
 /*global $*/
+/*global EmberPressDictionary */
+/*global alert*/
 
 (function () {
   'use strict'; 
@@ -310,7 +312,7 @@
 
     toggleInstructions: function() {
       this.toggleProperty('instructionsVisible');
-    },
+    }
 
   });
   EmberPress.ApplicationView = Ember.View.extend();
