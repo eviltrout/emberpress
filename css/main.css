@@ -41,6 +41,7 @@ header button {
 
 footer {
   position: fixed;
+  z-index: 50;
   width: 100%;
   bottom: 0;
   background-color: #333;
@@ -147,6 +148,7 @@ footer a[href]:hover {
 
 #instructions {
   width: 300px;
+  z-index: 60;
   position: absolute;
   top: 0px;
   right: -350px;
