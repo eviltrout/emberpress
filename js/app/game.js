@@ -42,17 +42,18 @@
 
     SIZE: 5,
 
-    rows: Ember.A(),
-    word: Ember.A(),
-    played: Ember.A(),
-
-    start: function() {
+    restart: function() {
 
       var player1 = EmberPress.Player.create({id: 'p1', board: this});
 
+      this.set('winner', null);
       this.set('player1', player1);
       this.set('player2', EmberPress.Player.create({id: 'p2', board: this}));
       this.set('currentPlayer', player1);
+
+      this.set('word', Ember.A());
+      this.set('played', Ember.A());
+      this.set('rows', Ember.A());
 
       var letterId = 0;
       for(var j=0; j< this.SIZE; j += 1) {
@@ -83,6 +84,11 @@
 
     clearWord: function() {
       this.set('word', Ember.A());
+    },
+
+    nextTurn: function() {
+      this.clearWord();
+      this.set('currentPlayer', this.get('otherPlayer'));
     },
 
     wordAsString: function() {
@@ -121,6 +127,20 @@
       return result;
     }.property('word.@each'),
 
+    finishGame: function(resigned) {
+      if (resigned) {
+        this.set('winner', this.get('otherPlayer'));
+      } else {
+
+        var diff = this.get('player1.score') - this.get('player2.score');
+        if (diff > 0) {
+          this.set('winner', this.get('player1'));
+        } else if (diff < 0) {
+          this.set('winner', this.get('player2'));
+        }
+      }
+    },
+
     submitWord: function() {
 
       // Update the scores
@@ -138,6 +158,7 @@
       }.bind(this));
 
       // Check for fortified tiles
+      var boardFull = true;
       for(var y=0; y<this.SIZE; y++) {
         for (var x=0; x<this.SIZE; x++) {
           var letter = this.rows[y][x];
@@ -146,13 +167,15 @@
           // Remove fortitication if present
           letter.set('fortified', false);
 
-          if (owner) {            
+          if (owner) {           
             // check neighbors
             if ((y > 0) && (this.rows[y-1][x].get('owner.id') != owner)) continue;
             if ((y < this.SIZE-1) && (this.rows[y+1][x].get('owner.id') != owner)) continue;
             if ((x > 0) && (this.rows[y][x-1].get('owner.id') != owner)) continue;
             if ((x < this.SIZE-1) && (this.rows[y][x+1].get('owner.id') != owner)) continue;
             letter.set('fortified', true);
+          } else {
+            boardFull = false;
           }
         }
       }
@@ -165,20 +188,53 @@
 
       this.clearWord();
 
-      // Switch turns
-      this.set('currentPlayer', this.get('otherPlayer'));
+      // If the board is full, game over
+      if (boardFull) {
+        this.finishGame(false);
+        EmberPress.set('router.boardController.inProgress', false);
+      } else {
+        // Switch turns
+        this.set('currentPlayer', this.get('otherPlayer'));
+      }
     }
 
   });
 
   // Game Board
   EmberPress.BoardController = Ember.ObjectController.extend({
-    clearWord: function() {
-      this.get('content').clearWord();
+
+    inProgress: true,
+
+    resign: function() {
+      this.get('content').finishGame(true);
+      this.set('inProgress', false);
     },
 
     submitWord: function() {
+
+      if ($.inArray(this.get('content.wordAsString').toLowerCase(), EmberPressDictionary) == -1) {
+        alert("Sorry, that word isn't in the dictionary");
+        return;
+      }
+
+      this.set('skipped', false);
       this.get('content').submitWord();
+    },
+
+    skipTurn: function() {
+      if (this.get('skipped')) {
+        this.get('content').finishGame();
+        this.set('inProgress', false);
+      } else {
+        this.set('skipped', true);      
+        this.get('content').nextTurn();
+      }
+    },
+
+    reset: function() {
+      this.set('skipped', false);
+      this.get('content').restart();
+      this.set('inProgress', true);
     },
 
     showClearWord: function() {
@@ -248,7 +304,15 @@
 
   // Boilerplate below initializes the game. Routers make more sense 
   // when there is more than one URL :)
-  EmberPress.ApplicationController = Ember.Controller.extend();
+  EmberPress.ApplicationController = Ember.Controller.extend({
+
+    instructionsVisible: false,
+
+    toggleInstructions: function() {
+      this.toggleProperty('instructionsVisible');
+    },
+
+  });
   EmberPress.ApplicationView = Ember.View.extend();
   var emberPressRouter = Ember.Router.extend({
     root: Ember.Route.extend({
@@ -256,7 +320,7 @@
         route: '/',
         connectOutlets: function (router) {
           var board = EmberPress.Board.create();
-          board.start();
+          board.restart();
           router.get('applicationController').connectOutlet('board', board);
         }
       })      

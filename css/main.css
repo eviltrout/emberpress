@@ -2,22 +2,47 @@ body {
   font-family: 'Average Sans', sans-serif;
 }
 
-.content {
-  padding: 20px;
-}
-
 /* App title */
-h1 {
+#header {
   font-size: 30px;
   background-color: #eee;
   box-shadow: 3px 3px 3px #ddd;
   padding: 10px 20px;
   text-shadow: 2px 2px 1px #fff;
+  height: 30px;
+}
+
+#header h1 {
+  float: left;
+}
+
+button {
+  position: relative;
+  border: 1px solid #ddd;
+  color: #999;
+  background-color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 2px 2px 1px #ddd;
+}
+
+button:active {
+  top: 1px;
+  left: 1px;
+  box-shadow: 0 0 0;
+  background-color: #fff;
+}
+
+#header button {
+  margin: 5px 0 0 0;
+  float: right;
 }
 
 .content {
-  width: 400px;
+  width: 350px;
   margin: 0 auto;
+  padding: 20px;
 }
 
 /* Controls */
@@ -39,7 +64,7 @@ h1 {
 }
 
 .player {
-  width: 40%;
+  width: 160px;
   margin: 0;
   padding: 0;
   display: inline-block;  
@@ -86,6 +111,49 @@ h1 {
   cursor: pointer;
 }
 
+.content h1 {
+  font-size: 40px;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+#instructions.visible {
+  right: 0;
+}
+
+#instructions {
+  width: 300px;
+  position: absolute;
+  top: 0px;
+  right: -350px;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: -3px 3px 3px #ddd;  
+  transition: right 0.5s;
+  -webkit-transition: right 0.5s;
+}
+
+#instructions button {
+  float: right;
+}
+
+#instructions p {
+  margin-bottom: 20px;
+}
+
+#instructions h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+#instructions ul {
+  margin: 20px;
+  list-style: square;
+}
+
+#instructions ul li {
+  margin-bottom: 10px;
+}
 
 #board .letter {
   display: inline-block;
@@ -123,6 +191,52 @@ h1 {
 
 .letter.p2.fortified {
   background-color: #f00 !important;  
+}
+
+#new-game {
+  text-align: center;
+}
+
+#new-game button {
+  font-size: 20px;
+  font-weight: normal;
+}
+
+#winner {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#winner .p2 {
+  color: #FF9999;
+  font-weight: bold;
+}
+
+#winner .p1 {
+  color: #9999FF;
+  font-weight: bold;
+}
+
+#turn-controls {
+  margin-top: 10px;
+  height: 30px;
+}
+
+#turn-controls button {
+  background-color: #999;
+  color: #eee;
+}
+
+#turn-controls button:active {
+  color: #eee;
+}
+
+#turn-controls button:nth-of-type(1) {
+  float: left;
+}
+
+#turn-controls button:nth-of-type(2) {
+  float: right;
 }
 
 #history {
