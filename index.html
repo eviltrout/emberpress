@@ -79,8 +79,8 @@
 
       </div>
       <footer>
-        <a href="https://github.com/eviltrout/emberpress" target="_blank">
-          <i class='icon icon-github'></i> View the Source on GitHub
+        <a href="/docs/emberpress.html" target="_blank">
+          view the annotated source code
         </a>
       </footer>
 
@@ -90,7 +90,7 @@
     <script type="text/x-handlebars" data-template-name="player">
       <i class='icon icon-user'></i>
       <i class='icon icon-caret-down'></i>
-      <figure class='score'>{{view.content.currentScore}}</figure>
+      <figure class='score'>{{view.content.possibleScore}}</figure>
     </script>
 
     <script type="text/x-handlebars" data-template-name="board">
@@ -144,7 +144,7 @@
 
       {{/if}}
 
-      {{#if hasPlayed}}
+      {{#if hasHistory}}
         <section id='history'>
           Played words:
           <ul>
@@ -157,6 +157,6 @@
     </script>
 
 
-    <script src="js/app/game.js"></script>
+    <script src="js/app/emberpress.js"></script>
   </body>
 </html>
