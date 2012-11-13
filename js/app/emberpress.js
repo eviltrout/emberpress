@@ -172,11 +172,12 @@
     // If the current word is being made up of letters belonging to the other player,
     // we consider them stolen. To correctly display the other player's possible score
     // we need to calculate how many points have been stolen.
+    // fortified letters cannot be stolen.
     stolenScore: function() {
       var result = 0, 
           otherPlayer = this.get('otherPlayer');
       this.get('word').forEach(function (letter) {        
-        if (letter.get('owner') === otherPlayer) {
+        if (letter.get('owner') === otherPlayer && !letter.get('fortified')) {
           result += 1;
         }
       });
