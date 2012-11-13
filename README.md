@@ -1,6 +1,6 @@
-### Emberpress
+## Emberpress
 
-## [Try LetterPress](http://emberpress.eviltrout.com)
+### [Try LetterPress](http://emberpress.eviltrout.com)
 
 This is a clone of the popular [Letterpress](https://itunes.apple.com/ca/app/letterpress-word-game/id526619424?mt=8)
 game. It is meant to show off the client side powers of the [EmberJS](http://emberjs.org)
