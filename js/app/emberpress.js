@@ -429,20 +429,15 @@
 
   // Boilerplate below initializes the game. Routers make more sense 
   // when there is more than one URL :)
-  EmberPress.ApplicationView = Ember.View.extend();
-  var emberPressRouter = Ember.Router.extend({
-    root: Ember.Route.extend({
-      index: Ember.Route.extend({
-        route: '/',
-        connectOutlets: function (router) {
-          var board = EmberPress.Board.create();
-          board.restart();
-          router.get('applicationController').connectOutlet('board', board);
-        }
-      })      
-    })
-  });
-  EmberPress.Router = emberPressRouter;
-  EmberPress.initialize();
+  EmberPress.IndexRoute = Ember.Route.extend({
+    setupController: function() {
+      var board = EmberPress.Board.create();
+      board.restart();
+      this.controllerFor('board').set('content', board);
+    },
 
+    renderTemplate: function() {
+      this.render('board');
+    }
+  });
 }());
