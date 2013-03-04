@@ -5,8 +5,8 @@
 // framework and was originally created for [Toronto EmberJS](http://torontoemberjs.com)
 // meetup by [Evil Trout](http://eviltrout.com).
 //
-// Mucho thanks go out Loren Brichter for the inspiration. Thanks to the EmberJS 
-// team for making an awesome framework that makes client side development fun. 
+// Mucho thanks go out Loren Brichter for the inspiration. Thanks to the EmberJS
+// team for making an awesome framework that makes client side development fun.
 // The dictionary was imported from [EOWL](http://dreamsteep.com/projects/the-english-open-word-list.html).
 // The icons are from [Font Awesome](http://fortawesome.github.com/Font-Awesome).
 //
@@ -16,13 +16,13 @@
 
 /*global window, Ember, $, EmberPressDictionary, alert*/
 (function () {
-  'use strict'; 
+  'use strict';
 
   // All Ember applications need to be an instance of `Ember.Application`.
   // We'll create this first so that we can use it as a namespace for all
   // our models, controllers and views.
-  var EmberPress = window.EmberPress = Ember.Application.create({ 
-    rootElement: $('body') 
+  var EmberPress = window.EmberPress = Ember.Application.create({
+    rootElement: $('body')
   });
 
   // ## Models
@@ -31,7 +31,7 @@
   // to organize our data.
 
 
-  // **Letter:** A simple object to represent a letter on the board. 
+  // **Letter:** A simple object to represent a letter on the board.
   EmberPress.Letter = Ember.Object.extend({});
 
   // **Word:** A word that has been played in the game.
@@ -42,13 +42,13 @@
   // of this, for p1 and p2.
   EmberPress.Player = Ember.Object.extend({
 
-    // Players start with a score of 0.    
+    // Players start with a score of 0.
     score: 0,
 
     // During a turn, all scores are automatically updated to show
-    // how they will be affected should the player finished their 
+    // how they will be affected should the player finished their
     // turn. We consider this the `possibleScore`. After their turn
-    // is made, it will be saved in `score`. 
+    // is made, it will be saved in `score`.
     possibleScore: function() {
 
       // If it's a player's turn, their `possibleScore` is their
@@ -60,7 +60,7 @@
       if (this.get('isTurn')) {
         result += this.get('board.score');
       } else {
-        result -= this.get('board.stolenScore');  
+        result -= this.get('board.stolenScore');
       }
       return result;
     }.property('board.score', 'board.stolenScore', 'isTurn'),
@@ -91,7 +91,7 @@
       // When a game begins, there is no winner.
       this.set('winner', null);
 
-      // There are two players. We'll identify them as *p1* and *p2* 
+      // There are two players. We'll identify them as *p1* and *p2*
       this.set('player1', EmberPress.Player.create({id: 'p1', board: this}));
       this.set('player2', EmberPress.Player.create({id: 'p2', board: this}));
 
@@ -111,16 +111,16 @@
       // uppercase ascii character and an id to identify it.
       var letterId = 0;
       for(var j=0; j< this.SIZE; j += 1) {
-        var row = Ember.A();       
+        var row = Ember.A();
         for(var i=0; i<this.SIZE; i += 1) {
           var letter = EmberPress.Letter.create({
-            id: letterId, 
+            id: letterId,
             letter: String.fromCharCode(65 + Math.round(Math.random() * 25))
           });
           row.pushObject(letter);
-          letterId += 1;          
+          letterId += 1;
         }
-        this.rows.pushObject(row);        
+        this.rows.pushObject(row);
       }
     },
 
@@ -174,9 +174,9 @@
     // we need to calculate how many points have been stolen.
     // fortified letters cannot be stolen.
     stolenScore: function() {
-      var result = 0, 
+      var result = 0,
           otherPlayer = this.get('otherPlayer');
-      this.get('word').forEach(function (letter) {        
+      this.get('word').forEach(function (letter) {
         if (letter.get('owner') === otherPlayer && !letter.get('fortified')) {
           result += 1;
         }
@@ -197,11 +197,8 @@
       return result;
     }.property('word.@each'),
 
-    // Finish the current game. 
+    // Finish the current game.
     finishGame: function(resigned) {
-
-      // Tell the board controller the game is no longer in progress.
-      EmberPress.set('router.boardController.inProgress', false);
 
       // If a player resigned, the other player automatically wins.
       if (resigned) {
@@ -221,7 +218,7 @@
     // Submit the current word in play.
     submitWord: function() {
 
-      // We call `updateScore` on both players to make their `possibleScore`s 
+      // We call `updateScore` on both players to make their `possibleScore`s
       // permanent.
       var currentPlayer = this.get('currentPlayer');
       currentPlayer.updateScore();
@@ -236,7 +233,7 @@
         }
       });
 
-      // We need to iterate through every `Letter` on the board to determine if they 
+      // We need to iterate through every `Letter` on the board to determine if they
       // are fortified. During this iteration, we also determine whether every `Letter`
       // has a colour. If so, the game is over.
       var boardFull = true;
@@ -248,7 +245,7 @@
           // By default we remove fortification (it will be applied again if still valid.)
           letter.set('fortified', false);
 
-          if (owner) {           
+          if (owner) {
             // Check the NESW neighbors of the tile
             if ((y > 0) && (this.rows[y-1][x].get('owner.id') != owner)) continue;
             if ((y < this.SIZE-1) && (this.rows[y+1][x].get('owner.id') != owner)) continue;
@@ -266,7 +263,7 @@
 
       // Add the word to the played list
       this.get('played').addObject(EmberPress.Word.create({
-        value: this.get('wordAsString'), 
+        value: this.get('wordAsString'),
         playedBy: this.get('currentPlayer')
       }));
 
@@ -307,7 +304,7 @@
       return this.get('content.word').length > 0;
     }.property('content.word.@each'),
 
-    // Do we want to show the 'SUBMIT' button? 
+    // Do we want to show the 'SUBMIT' button?
     showSubmitWord: function() {
       // Word needs to be at least 2 letters long
       return (this.get('content.word').length > 1);
@@ -318,12 +315,19 @@
       this.get('content').finishGame(true);
     },
 
+    // If we have a winner, the game is over
+    winnerChanged: function() {
+      if (this.get('content.winner')) {
+        this.set('inProgress', false);
+      }
+    }.observes('content.winner'),
+
     // `submitWord` is called when the player clicks submit.
     submitWord: function() {
 
       var w = this.get('content.wordAsString').toLowerCase();
 
-      // First, we need to see if the word is in our game's dictionary. 
+      // First, we need to see if the word is in our game's dictionary.
       // We use jQuery's handy $.inArray for this.
       if ($.inArray(w, EmberPressDictionary) == -1) {
         alert("Sorry, that word isn't in the dictionary");
@@ -334,7 +338,7 @@
       // been played. We unfortunately have to use a `forEach` for this,
       // as we do not allow roots of existing words either.
       var unplayedWord = true;
-      this.get('content.played').forEach(function (word) {      
+      this.get('content.played').forEach(function (word) {
         if (word.get('value').toLowerCase().indexOf(w) === 0) {
           alert("That word can't be played.");
           unplayedWord = false;
@@ -358,7 +362,7 @@
         this.get('content').finishGame();
       } else {
         // Otherwise, skip to the next turn.
-        this.set('skipped', true);      
+        this.set('skipped', true);
         this.get('content').nextTurn();
       }
     },
@@ -380,7 +384,7 @@
   // **LetterView**: Represents a `Letter` either on the board, or in the current
   // word being assembled.
   EmberPress.LetterView = Ember.View.extend({
-    classNameBindings: [':letter', 'chosen', 'ownerClass', 'content.fortified'],    
+    classNameBindings: [':letter', 'chosen', 'ownerClass', 'content.fortified'],
     boardBinding: 'controller.content',
 
     // Set the CSS class to be the id of the current `Letter`, if present.
@@ -427,7 +431,7 @@
     templateName: 'player'
   });
 
-  // Boilerplate below initializes the game. Routers make more sense 
+  // Boilerplate below initializes the game. Routers make more sense
   // when there is more than one URL :)
   EmberPress.IndexRoute = Ember.Route.extend({
     setupController: function() {
