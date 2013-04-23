@@ -27,7 +27,7 @@
 
   // ## Models
   //
-  // Our models are delcared as extensions of `Ember.Object`. We use models
+  // Our models are declared as extensions of `Ember.Object`. We use models
   // to organize our data.
 
 
