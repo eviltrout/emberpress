@@ -13,24 +13,24 @@
   </head>
   <body>
     <script src="js/vendor/jquery-1.9.1.min.js"></script>
-    <script src="js/vendor/handlebars-1.0.0-rc.3.js"></script>
-    <script src="js/vendor/ember-1.0.0-rc.1.min.js"></script>    
-    <script src="js/vendor/dictionary.js"></script>    
+    <script src="js/vendor/handlebars-1.0.0-rc.4.js"></script>
+    <script src="js/vendor/ember-1.0.0-rc.6.js"></script>
+    <script src="js/vendor/dictionary.js"></script>
 
     <script type="text/x-handlebars" data-template-name="application">
       <header>
         <h1>EmberPress</h1>
 
-        <button {{action toggleInstructions target="controller"}}>How do I Play?</button>
+        <button {{action toggleProperty "instructionsVisible"}}>How do I Play?</button>
       </header>
 
       <div class="content">
         {{outlet}}
       </div>
 
-      <div id='instructions' {{bindAttr class="controller.instructionsVisible:visible"}}>
+      <div id='instructions' {{bindAttr class="instructionsVisible:visible"}}>
 
-        <button {{action toggleInstructions target="controller"}}>Close</button>
+        <button {{action toggleProperty "instructionsVisible"}}>Close</button>
 
         <h2>How to Play</h2>
 
@@ -38,7 +38,7 @@
            tile to add it to your word. When your word is complete, hit <b>Submit</b>.
            You will then convert those letter tiles to your player's color.</p>
 
-        <p>There is no Internet multiplayer component - both players must take turns on the 
+        <p>There is no Internet multiplayer component - both players must take turns on the
            same computer.</p>
 
         <p>Scores are calculated based on how many colored tiles you are assuming.
@@ -51,7 +51,7 @@
         <h2>Fortifying Tiles</h2>
 
         <p>If you color a tile and all of its surrounding tiles (NESW, like a compass)
-           it will be fortified and become darker. The opposing player may not steal 
+           it will be fortified and become darker. The opposing player may not steal
            that tile and take a point from you. However, if they steal back a surrounding
            tile, it will become unfortified and return to play.</p>
 
@@ -68,12 +68,12 @@
         <h2>Who made this?</h2>
 
         <p>This is a clone of the popular <a href="https://itunes.apple.com/ca/app/letterpress-word-game/id526619424?mt=8" target="_blank">Letterpress</a>
-           game. It is meant to show off the client side powers of the <a href="http://emberjs.org" target="_blank">EmberJS</a> 
-           framework and was originally created for <a href="http://torontoemberjs.com/" target="_blank">Toronto EmberJS</a> 
+           game. It is meant to show off the client side powers of the <a href="http://emberjs.org" target="_blank">EmberJS</a>
+           framework and was originally created for <a href="http://torontoemberjs.com/" target="_blank">Toronto EmberJS</a>
            meetup by <a href="http://eviltrout.com/" target="_blank">Evil Trout</a>.</p>
 
-        <p>Mucho thanks go out Loren Brichter for the inspiration. Thanks to the EmberJS 
-           team for making an awesome framework that makes client side development fun. 
+        <p>Mucho thanks go out Loren Brichter for the inspiration. Thanks to the EmberJS
+           team for making an awesome framework that makes client side development fun.
            The dictionary was imported from <a href="http://dreamsteep.com/projects/the-english-open-word-list.html">EOWL</a>.
            The player icons are from <a href="http://fortawesome.github.com/Font-Awesome/" target="_blank">Font Awesome</a>.
 
@@ -98,26 +98,26 @@
       {{#if inProgress}}
         <nav id='controls'>
           {{#if showClearWord}}
-            <button {{action clearWord target="content"}} class='clear'>Clear</button>
+            <button {{action clearWord target="model"}} class='clear'>Clear</button>
           {{/if}}
           {{#if showSubmitWord}}
-            <button {{action submitWord target="controller"}} class='submit'>Submit</button>
+            <button {{action submitWord}} class='submit'>Submit</button>
           {{/if}}
         </nav>
 
         <summary id='score'>
-          {{view EmberPress.PlayerView contentBinding="content.player1"}}
-          {{view EmberPress.PlayerView contentBinding="content.player2"}}
+          {{view EmberPress.PlayerView contentBinding="player1"}}
+          {{view EmberPress.PlayerView contentBinding="player2"}}
         </summary>
 
         <section id='word'>
-          {{#each content.word}}
+          {{#each word}}
             {{view EmberPress.WordLetterView contentBinding="this"}}
           {{/each}}
         </section>
 
         <section id='board'>
-          {{#each content.rows}}
+          {{#each rows}}
             <div class='row'>{{#each this}}{{view EmberPress.BoardLetterView contentBinding="this"}}{{/each}}</div>
           {{/each}}
         </section>
@@ -130,9 +130,9 @@
         <h1>Game Over!</h1>
 
         <div id='winner'>
-          {{#if content.winner}}
-            The winner was <span {{bindAttr class='content.winner.id'}}>{{content.winner.id}}</span> with a score
-            of {{content.winner.score}}.
+          {{#if winner}}
+            The winner was <span {{bindAttr class='winner.id'}}>{{winner.id}}</span> with a score
+            of {{winner.score}}.
           {{else}}
             It was a tie.
           {{/if}}
@@ -153,7 +153,7 @@
             {{/each}}
           </ul>
         </section>
-      {{/if}}      
+      {{/if}}
     </script>
 
 
