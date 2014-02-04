@@ -378,9 +378,6 @@
 
   // ## Views
 
-  // **BoardView**: Used to render the board from a template.
-  EmberPress.BoardView = Ember.View.extend({templateName: 'board'});
-
   // **LetterView**: Represents a `Letter` either on the board, or in the current
   // word being assembled.
   EmberPress.LetterView = Ember.View.extend({
